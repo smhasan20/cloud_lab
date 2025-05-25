@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Even Numbers Generator</title>
+</head>
+<body>
+    <h2>Enter a number to generate even numbers:</h2>
+    <form method="POST">
+        <input type="number" name="number" required>
+        <button type="submit">Generate</button>
+    </form>
+    {% if even_numbers %}
+        <h3>Even Numbers:</h3>
+        <p>{{ even_numbers|join(', ') }}</p>
+    {% endif %}
+</body>
+</html>

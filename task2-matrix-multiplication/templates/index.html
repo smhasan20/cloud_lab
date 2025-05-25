@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Matrix Multiplication</title>
+</head>
+<body>
+    <h2>Matrix Multiplication</h2>
+    <form method="post">
+        <label>Matrix Size (e.g., 2 for 2x2):</label>
+        <input type="number" name="size" min="1" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if request.method == 'POST' and not result and not error %}
+    <form method="post">
+        <input type="hidden" name="size" value="{{ request.form['size'] }}">
+        <h3>Enter Matrix A</h3>
+        {% for i in range(size|int) %}
+            {% for j in range(size|int) %}
+                <input type="number" name="a{{i}}{{j}}" required>
+            {% endfor %}
+            <br>
+        {% endfor %}
+
+        <h3>Enter Matrix B</h3>
+        {% for i in range(size|int) %}
+            {% for j in range(size|int) %}
+                <input type="number" name="b{{i}}{{j}}" required>
+            {% endfor %}
+            <br>
+        {% endfor %}
+        <br>
+        <button type="submit">Multiply</button>
+    </form>
+    {% endif %}
+
+    {% if result %}
+        <h3>Result:</h3>
+        {% for row in result %}
+            {{ row }}<br>
+        {% endfor %}
+    {% endif %}
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>
