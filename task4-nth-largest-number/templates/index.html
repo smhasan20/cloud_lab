@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nth Largest Number</title>
+</head>
+<body>
+    <h2>Find the Nth Largest Number</h2>
+    <form method="POST" action="/">
+        <label>Enter a list of numbers (comma separated):</label><br>
+        <input type="text" name="numbers" value="{{ numbers_input }}" required><br><br>
+        
+        <label>Enter N:</label><br>
+        <input type="number" name="n" min="1" value="{{ n_input }}" required><br><br>
+        
+        <input type="submit" value="Find Nth Largest">
+    </form>
+    
+    {% if result %}
+        <h3>Result: {{ result }}</h3>
+    {% endif %}
+</body>
+</html>

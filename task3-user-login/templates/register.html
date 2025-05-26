@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
-<head><title>Register</title></head>
+<head>
+    <title>Register</title>
+</head>
 <body>
     <h2>User Registration</h2>
-    <form method="POST">
-        Username: <input type="text" name="username" required><br><br>
-        Password: <input type="password" name="password" required><br><br>
-        <button type="submit">Register</button>
+    <form action="/register" method="POST">
+        <label>Username:</label><br>
+        <input type="text" name="username"><br><br>
+        <label>Password:</label><br>
+        <input type="password" name="password"><br><br>
+        <input type="submit" value="Register">
     </form>
-    <p>{{ message }}</p>
-    <p><a href="/login">Already have an account? Login</a></p>
+    <p>Already have an account? <a href="/login">Login</a></p>
 </body>
 </html>
