@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect
 import psycopg2
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 # PostgreSQL connection
 db = psycopg2.connect(
@@ -93,7 +93,7 @@ def login():
     '''
 
 # Run the app
-if _name_ == '_main_':
+if __name__ == '__main__':
     import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
