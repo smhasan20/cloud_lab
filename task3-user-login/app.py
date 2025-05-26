@@ -61,11 +61,6 @@ def login_page():
             <input name="password" type="password" placeholder="Password"><br>
             <input type="submit" value="Login">
         </form>
-        <div class="note">
-            <p><strong>Try with this login credentials:</strong></p>
-            <p>Username: <code>admin</code></p>
-            <p>Password: <code>1234</code></p>
-        </div>
     </div>
     '''
 
