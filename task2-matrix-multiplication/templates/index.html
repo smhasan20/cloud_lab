@@ -1,62 +1,559 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Matrix Multiplication</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Matrix Multiplication</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+        }
+
+        .header .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            gap: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 25px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .step.active .step-number {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+
+        .dimensions-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .matrix-dims {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e9ecef;
+            text-align: center;
+        }
+
+        .matrix-dims h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .dim-inputs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .dim-input {
+            width: 80px;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .dim-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: scale(1.05);
+        }
+
+        .dim-label {
+            font-size: 1.2rem;
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .multiplication-rule {
+            text-align: center;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .matrix-section {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .matrix-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e9ecef;
+        }
+
+        .matrix-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .matrix-grid {
+            display: grid;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .matrix-input {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .matrix-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: scale(1.05);
+        }
+
+        .operation-symbol {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-center {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .result-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            border: 2px solid #dee2e6;
+        }
+
+        .result-title {
+            font-size: 1.8rem;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .result-matrix {
+            display: inline-block;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 2px solid #667eea;
+            margin-bottom: 30px;
+        }
+
+        .result-table {
+            border-collapse: separate;
+            border-spacing: 8px;
+        }
+
+        .result-table td {
+            min-width: 70px;
+            height: 60px;
+            text-align: center;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: table-cell;
+            vertical-align: middle;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: transform 0.2s ease;
+            padding: 5px;
+        }
+
+        .result-table td:hover {
+            transform: scale(1.05);
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            text-decoration: none;
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.3);
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        .error-message {
+            background: linear-gradient(45deg, #f5576c, #f093fb);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.3);
+        }
+
+        .info-box {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .dimensions-grid,
+            .matrix-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .operation-symbol {
+                font-size: 2rem;
+                transform: rotate(90deg);
+            }
+
+            .step-indicator {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .matrix-input {
+                width: 50px;
+                height: 50px;
+                font-size: 0.9rem;
+            }
+
+            .dim-inputs {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .matrix-container,
+        .matrix-dims {
+            animation: fadeInUp 0.4s ease-out;
+        }
+    </style>
 </head>
 <body>
-    <h2>Matrix Multiplication</h2>
+    <div class="container">
+        <div class="header">
+            <h1>🔢 Dynamic Matrix Multiplication</h1>
+            <p class="subtitle">Multiply matrices of any compatible dimensions!</p>
+        </div>
 
-    {% if not size %}
-    <!-- Step 1: Input matrix size -->
-    <form method="post">
-        <label>Matrix Size (e.g., 2 for 2x2):</label>
-        <input type="number" name="size" min="1" required>
-        <button type="submit" name="submit_size">Submit Size</button>
-    </form>
-    {% endif %}
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step {{ 'active' if not (rows_a and cols_a and rows_b and cols_b) else '' }}">
+                <div class="step-number">1</div>
+                <span>Matrix Dimensions</span>
+            </div>
+            <div class="step {{ 'active' if (rows_a and cols_a and rows_b and cols_b) and not result else '' }}">
+                <div class="step-number">2</div>
+                <span>Enter Matrices</span>
+            </div>
+            <div class="step {{ 'active' if result else '' }}">
+                <div class="step-number">3</div>
+                <span>Result</span>
+            </div>
+        </div>
 
-    {% if size and not result %}
-    <!-- Step 2: Input matrices -->
-    <form method="post">
-        <input type="hidden" name="size" value="{{ size }}">
-        
-        <h3>Enter Matrix A</h3>
-        {% for i in range(size) %}
-            {% for j in range(size) %}
-                <input type="number" name="a{{i}}{{j}}" required style="width:50px;">
-            {% endfor %}
+        {% if not (rows_a and cols_a and rows_b and cols_b) %}
+        <!-- Step 1: Input matrix dimensions -->
+        <div class="form-section">
+            <form method="post">
+                <div class="dimensions-grid">
+                    <!-- Matrix A Dimensions -->
+                    <div class="matrix-dims">
+                        <h3>Matrix A Dimensions</h3>
+                        <div class="dim-inputs">
+                            <span class="dim-label">Rows:</span>
+                            <input type="number" name="rows_a" min="1" max="10" class="dim-input" 
+                                   placeholder="2" required value="{{ request.form.get('rows_a', '') }}">
+                            <span class="dim-label">×</span>
+                            <span class="dim-label">Cols:</span>
+                            <input type="number" name="cols_a" min="1" max="10" class="dim-input" 
+                                   placeholder="3" required value="{{ request.form.get('cols_a', '') }}">
+                        </div>
+                    </div>
+
+                    <!-- Multiplication Rule -->
+                    <div class="multiplication-rule">
+                        <div>For A × B to be possible:</div>
+                        <div><strong>Columns of A = Rows of B</strong></div>
+                    </div>
+
+                    <!-- Matrix B Dimensions -->
+                    <div class="matrix-dims">
+                        <h3>Matrix B Dimensions</h3>
+                        <div class="dim-inputs">
+                            <span class="dim-label">Rows:</span>
+                            <input type="number" name="rows_b" min="1" max="10" class="dim-input" 
+                                   placeholder="3" required value="{{ request.form.get('rows_b', '') }}">
+                            <span class="dim-label">×</span>
+                            <span class="dim-label">Cols:</span>
+                            <input type="number" name="cols_b" min="1" max="10" class="dim-input" 
+                                   placeholder="4" required value="{{ request.form.get('cols_b', '') }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    💡 Example: A(2×3) × B(3×4) = Result(2×4)
+                </div>
+
+                <button type="submit" name="submit_dimensions" class="btn btn-center">
+                    📐 Generate Matrix Forms
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if (rows_a and cols_a and rows_b and cols_b) and not result %}
+        <!-- Step 2: Input matrices -->
+        <div class="form-section">
+            <form method="post">
+                <input type="hidden" name="rows_a" value="{{ rows_a }}">
+                <input type="hidden" name="cols_a" value="{{ cols_a }}">
+                <input type="hidden" name="rows_b" value="{{ rows_b }}">
+                <input type="hidden" name="cols_b" value="{{ cols_b }}">
+                
+                <div class="matrix-section">
+                    <!-- Matrix A -->
+                    <div class="matrix-container">
+                        <h3 class="matrix-title">Matrix A ({{ rows_a }}×{{ cols_a }})</h3>
+                        <div class="matrix-grid" style="grid-template-columns: repeat({{ cols_a }}, 1fr);">
+                            {% for i in range(rows_a) %}
+                                {% for j in range(cols_a) %}
+                                    <input type="number" name="a{{i}}{{j}}" class="matrix-input" 
+                                           placeholder="0" step="any" value="0">
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Multiplication Symbol -->
+                    <div class="operation-symbol">×</div>
+
+                    <!-- Matrix B -->
+                    <div class="matrix-container">
+                        <h3 class="matrix-title">Matrix B ({{ rows_b }}×{{ cols_b }})</h3>
+                        <div class="matrix-grid" style="grid-template-columns: repeat({{ cols_b }}, 1fr);">
+                            {% for i in range(rows_b) %}
+                                {% for j in range(cols_b) %}
+                                    <input type="number" name="b{{i}}{{j}}" class="matrix-input" 
+                                           placeholder="0" step="any" value="0">
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Equals Symbol -->
+                    <div class="operation-symbol">=</div>
+
+                    <!-- Result Dimensions Preview -->
+                    <div class="matrix-container">
+                        <h3 class="matrix-title">Result ({{ rows_a }}×{{ cols_b }})</h3>
+                        <div style="text-align: center; padding: 40px; color: #666; font-style: italic;">
+                            Click calculate to see result
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" name="submit_matrices" class="btn btn-center">
+                    🚀 Calculate Matrix Multiplication
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if result %}
+        <!-- Step 3: Show Result -->
+        <div class="result-section">
+            <h2 class="result-title">✨ Matrix Multiplication Result ({{ rows_a }}×{{ cols_b }})</h2>
+            <div class="result-matrix">
+                <table class="result-table">
+                    {% for row in result %}
+                        <tr>
+                        {% for val in row %}
+                            <td>{{ "%.2f"|format(val) if val != val|int else val|int }}</td>
+                        {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
             <br>
-        {% endfor %}
+            <a href="/" class="reset-btn">🔄 Calculate Another Multiplication</a>
+        </div>
+        {% endif %}
 
-        <h3>Enter Matrix B</h3>
-        {% for i in range(size) %}
-            {% for j in range(size) %}
-                <input type="number" name="b{{i}}{{j}}" required style="width:50px;">
-            {% endfor %}
-            <br>
-        {% endfor %}
-        <br>
-        <button type="submit" name="submit_matrices">Multiply</button>
-    </form>
-    {% endif %}
-
-    {% if result %}
-    <h3>Result (Matrix Multiplication):</h3>
-    <table border="1" cellpadding="5">
-        {% for row in result %}
-            <tr>
-            {% for val in row %}
-                <td>{{ val }}</td>
-            {% endfor %}
-            </tr>
-        {% endfor %}
-    </table>
-    <br>
-    <a href="/">Do Another Multiplication</a>
-    {% endif %}
-
-    {% if error %}
-    <p style="color: red;">{{ error }}</p>
-    {% endif %}
+        {% if error %}
+        <div class="error-message">
+            ❌ {{ error }}
+        </div>
+        {% endif %}
+    </div>
 </body>
 </html>
