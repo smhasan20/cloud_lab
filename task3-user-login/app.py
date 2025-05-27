@@ -32,6 +32,9 @@ def init_db():
                 CREATE TABLE IF NOT EXISTS users (
                     id SERIAL PRIMARY KEY,
                     username VARCHAR(50) UNIQUE NOT NULL,
+                    email VARCHAR(100) UNIQUE,
+                    full_name VARCHAR(100),
+                    phone VARCHAR(20),
                     password VARCHAR(255) NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
@@ -187,6 +190,7 @@ HTML_STYLE = """
     .icon {
         font-size: 24px;
         margin-bottom: 10px;
+        text-align: center;
     }
     
     @media (max-width: 480px) {
